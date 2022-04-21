@@ -1,0 +1,3 @@
+include requirements.txt 
+include logicbook/ui/build/*
+recursive-include logicbook/template *
