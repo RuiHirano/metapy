@@ -3,6 +3,16 @@ sidebar_position: 1
 ---
 
 # Order Methods
+## Usage
+Order methods is method of ExpertAdvisor class
+
+### Example
+```
+class MyEA(ExpertAdvisor):
+    ...
+    def on_tick(self, tick):
+        self.OrderSend("EURUSD", 0, 0.1, 1.1433, 3, 0, 0)
+```
 
 ## OrderSend
 
