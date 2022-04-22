@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum, IntEnum
 
 class Tick(BaseModel):
-    datetime: datetime
+    time: datetime
     bid: float
     ask: float
     last: float
@@ -12,7 +12,7 @@ class Tick(BaseModel):
     flags: int
     volume_real: float
 
-class Rates(BaseModel):
+class Rate(BaseModel):
     time: datetime
     open: float
     high: float
