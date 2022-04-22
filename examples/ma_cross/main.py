@@ -1,18 +1,22 @@
 from metapy import MetaPy
 
-meta = MetaPy()
+meta = MetaPy(
+    server="http://localhost:5005",
+    debug=True,
+    log_level="DEBUG",
+)
 
 class MACrossStrategy:
-    def __init__(self, api) -> None:
-        self.api = api
+    def __init__(self) -> None:
+        pass
 
     def next(self, tick_data):
-        self.api.order.OrderSend(0,0,0,0,0,0,0)
+        meta.order.OrderSend("EURUSD",0,0,0,0,0,0)
         
 
 @meta.OnInit()
 def on_init():
-    strategy = MACrossStrategy(meta)
+    strategy = MACrossStrategy()
     meta.strategy = strategy
     print("on_init")
 
