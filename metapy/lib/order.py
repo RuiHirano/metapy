@@ -6,11 +6,11 @@ from pydantic import BaseModel
 from enum import Enum
 from lib.logger import log
 
-class ENUM_ORDER_ACTION(int, Enum):
-    ORDER_ACTION_SEND = 0
-    ORDER_ACTION_CLOSE = 1
-    ORDER_ACTION_MODIFY = 2
-    ORDER_ACTION_DELETE = 3
+class ENUM_ORDER_ACTION(str, Enum):
+    ORDER_ACTION_SEND = "ORDER_ACTION_SEND"
+    ORDER_ACTION_CLOSE = "ORDER_ACTION_CLOSE"
+    ORDER_ACTION_MODIFY = "ORDER_ACTION_MODIFY"
+    ORDER_ACTION_DELETE = "ORDER_ACTION_DELETE"
 
 class MessageModel(BaseModel):
     action: ENUM_ORDER_ACTION
@@ -45,8 +45,8 @@ class OrderDeleteModel(BaseModel):
     ticket: int
 
 class Order:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, api):
+        self.api = api
 
     def OrderSend(
         self, 
@@ -78,8 +78,7 @@ class Order:
             action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND,
             data=order_send.dict()
         ).dict())
-        res = self.client.send_message(data)
-        ticket = res["data"]["ticket"]
+        ticket = self.api.send_message(ENUM_ORDER_ACTION.ORDER_ACTION_SEND, order_send.dict())
         if ticket == -1:
             log.error("OrderSend is failed")
         else:
@@ -105,8 +104,8 @@ class Order:
             data=order_close.dict()
         ).dict())
         
-        res = self.client.send_message(data)
-        closed = res["data"]["closed"]
+        res = self.api.send_message(data)
+        closed = res["data"]
         if closed:
             log.error("OrderClose is failed")
         else:
@@ -133,8 +132,8 @@ class Order:
             action=ENUM_ORDER_ACTION.ORDER_ACTION_MODIFY,
             data=order_modify.dict()
         ).dict())
-        res = self.client.send_message(data)
-        modified = res["data"]["modified"]
+        res = self.api.send_message(data)
+        modified = res["data"]
         if modified:
             log.error("OrderModified is failed")
         else:
@@ -153,8 +152,8 @@ class Order:
             action=ENUM_ORDER_ACTION.ORDER_ACTION_DELETE,
             data=order_delete.dict()
         ).dict())
-        res = self.client.send_message(data)
-        deleted = res["data"]["deleted"]
+        res = self.api.send_message(data)
+        deleted = res["data"]
         if deleted:
             log.error("OrderDelete is failed")
         else:

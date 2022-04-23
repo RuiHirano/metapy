@@ -5,10 +5,10 @@ from enum import Enum
 from lib.type import ENUM_TIMEFRAME
 import json
 
-class ENUM_TIMESERIES_ACTION(int, Enum):
-    TIMESERIES_ACTION_GET_N_RATES_BY_START_POSITION = 0
-    TIMESERIES_ACTION_GET_N_RATES_BY_START_TIME = 1
-    TIMESERIES_ACTION_GET_RATES_BY_TIME_INTERVAL = 2
+class ENUM_TIMESERIES_ACTION(str, Enum):
+    TIMESERIES_ACTION_GET_N_RATES_BY_START_POSITION = "TIMESERIES_ACTION_GET_N_RATES_BY_START_POSITION"
+    TIMESERIES_ACTION_GET_N_RATES_BY_START_TIME = "TIMESERIES_ACTION_GET_N_RATES_BY_START_TIME"
+    TIMESERIES_ACTION_GET_RATES_BY_TIME_INTERVAL = "TIMESERIES_ACTION_GET_RATES_BY_TIME_INTERVAL"
 
 class MessageModel(BaseModel):
     action: ENUM_TIMESERIES_ACTION
@@ -33,8 +33,8 @@ class GetRatesByTimeIntervalModel(BaseModel):
     stop_time: datetime
 
 class Timeseries:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, api):
+        self.api = api
 
     def GetNRatesByStartPosition(
         self, 
@@ -53,8 +53,9 @@ class Timeseries:
             action=ENUM_TIMESERIES_ACTION.TIMESERIES_ACTION_GET_N_RATES_BY_START_POSITION,
             data=get_rates.dict()
         ).dict())
-        res = self.client.send_message(data)
-        return res
+        res = self.api.send_message(data)
+        rates = res["data"]
+        return rates
 
     def GetNRatesByStartTime(
         self, 
@@ -73,7 +74,7 @@ class Timeseries:
             action=ENUM_TIMESERIES_ACTION.TIMESERIES_ACTION_GET_N_RATES_BY_START_TIME,
             data=get_rates.dict()
         ).dict())
-        res = self.client.send_message(data)
+        res = self.api.send_message(data)
         return res
 
     def GetRatesByTimeInterval(
@@ -93,5 +94,5 @@ class Timeseries:
             action=ENUM_TIMESERIES_ACTION.TIMESERIES_ACTION_GET_RATES_BY_TIME_INTERVAL,
             data=get_rates.dict()
         ).dict())
-        res = self.client.send_message(data)
+        res = self.api.send_message(data)
         return res

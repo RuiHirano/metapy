@@ -1,10 +1,13 @@
+from lib.api import ENUM_EVENT_ACTION
 from lib.type import Tick, ENUM_TIMEFRAME
 from lib.order import Order
 from lib.account import Account
 from lib.market import Market
 from lib.timeseries import Timeseries
 from lib.client import Client, MockClient
+from lib.api import API
 from datetime import datetime
+from lib.logger import log
 import logging
 from rich.logging import RichHandler
 
@@ -30,45 +33,36 @@ class ExpertAdvisor(Order, Account, Market, Timeseries):
     def on_deinit(self):
         raise NotImplementedError
 
-    def connect(self, server):
-        self.server = server
-        self.client = Client(self.server) if not self.debug else MockClient(self.server)
-        self.connected = True
+    def connect(self, server_address, target_address):
+        self.api = API(server_address, target_address)
+        self.api.connect()
 
     def run(self):
         print("run")
-        if self.connected:
-            self.on_init()
-            for i in range(10):
-                tick = Tick(
-                    time=datetime.now(),
-                    bid=i,
-                    ask=i,
-                    last=i,
-                    volume=i,
-                    time_msc=i,
-                    flags=i,
-                    volume_real=i
-                )
-                self.on_tick(tick)
-            self.on_deinit()
-        else:
-            raise Exception("Not connected")
+        try:
+            self.api.register_event(ENUM_EVENT_ACTION.EVENT_ACTION_ON_INIT, lambda data: self.on_init())
+            self.api.register_event(ENUM_EVENT_ACTION.EVENT_ACTION_ON_TICK, lambda tick: self.on_tick(Tick(**tick)))
+            self.api.register_event(ENUM_EVENT_ACTION.EVENT_ACTION_ON_DEINIT, lambda data: self.on_deinit())
+            self.api.send_run_command()
+            self.api.wait_event()
+        except Exception as e:
+            log.error(e)
+            raise e
 
 
 if __name__ == "__main__":
     class MyEA(ExpertAdvisor):
         def on_init(self):
-            print("on_init")
+            print("started on_init")
 
         def on_tick(self, tick: Tick):
             ticket = self.OrderSend("EURUSD", 0, 0, 0, 0, 0, 0)
-            print("on_tick", self.AccountBalance(), ticket)
+            print("on_tick", tick.time)
 
         def on_deinit(self):
             print("on_deinit")
 
-    ea = MyEA(debug=True, log_level="DEBUG")
-    ea.connect(server="localhost:5555")
+    ea = MyEA(debug=False, log_level="DEBUG")
+    ea.connect(server_address="tcp://127.0.0.1:5556", target_address="tcp://127.0.0.1:5557")
     ea.run()
 

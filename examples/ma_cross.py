@@ -21,6 +21,7 @@ class MACrossEA(ExpertAdvisor):
         print("on_tick", tick.time)
         rates_h1 = self.GetNRatesByStartPosition(self.symbol, ENUM_TIMEFRAME.PERIOD_H1, 0, 100)
         rates_m15 = self.GetNRatesByStartPosition(self.symbol, ENUM_TIMEFRAME.PERIOD_M15, 0, 100)
+        print("test", rates_h1)
         sma_h1 = sma(rates_h1)
         sma_m15 = sma(rates_m15)
         
@@ -42,5 +43,5 @@ if __name__ == "__main__":
         debug=True,
         log_level="DEBUG",
     )
-    ea.connect(server="localhost:5555")
+    ea.connect(server_address="tcp://127.0.0.1:5556", target_address="tcp://127.0.0.1:5557")
     ea.run()
