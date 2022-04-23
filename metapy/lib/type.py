@@ -35,7 +35,7 @@ class ENUM_ORDER_TYPE(int, Enum):
     ORDER_TYPE_BUY_STOP = 4
     ORDER_TYPE_SELL_STOP = 5
 
-class ENUM_TIMEFRAME(str, Enum):
+class ENUM_TIMEFRAME(int, Enum):
     PERIOD_CURRENT=0
     PERIOD_M1=1
     PERIOD_M5=5
