@@ -97,6 +97,8 @@ class API:
                     log.error(res.error)
                 else:
                     log.debug("{} Finished".format(req.action))
+                    if req.action == ENUM_EVENT_ACTION.EVENT_ACTION_ON_DEINIT:
+                        break
 
     def send_message(self, action, data):
         req = Request(action=action, data=data)

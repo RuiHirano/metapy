@@ -52,7 +52,7 @@ class Timeseries:
             count=count,
         )
         rates = self.api.send_message(action=ENUM_TIMESERIES_ACTION.TIMESERIES_ACTION_GET_N_RATES_BY_START_POSITION, data=get_rates.dict())
-        if dataframe:
+        if dataframe and rates:
             rates = pd.DataFrame.from_records(rates)
         return rates
 

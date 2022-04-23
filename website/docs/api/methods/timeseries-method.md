@@ -22,13 +22,15 @@ rates = GetNRatesByStartPosition(symbol, timeframe, start_pos, count)
 | timeframe        | ENUM_TIMEFRAME |           | Period   |
 | start_pos      | int           |           | Start position   | 
 | count       | int           |           | data count to get   |
+| dataframe       | bool           | True          | return as pandas.DataFrame   |
 
 ### Return
-Returns list of the Rate.
+Returns list of the Rate or pandas.Dataframe if dataframe=True.
+Return None in case of  an error.
 
 |  Name       |  Type    |  Default  |  Description   |
 | ----        | ----     | ----      | ----          |
-| rates      | Rate[]      |           |  Returns list of the Rate  |
+| rates      | Rate[] or pandas.Dataframe or None     |           |  Returns list of the Rate or pandas.Dataframe if dataframe=True. Return None in case of  an error.  |
 
 ## GetNRatesByStartTime
 Call by the start date and the number of required elements
@@ -51,13 +53,15 @@ rates = GetNRatesByStartTime(symbol, timeframe, start_time, count)
 | timeframe        | ENUM_TIMEFRAME |           | Period   |
 | start_time      | datetime           |           | Start date and time   | 
 | count       | int           |           | data count to get   |
+| dataframe       | bool           | True          | return as pandas.DataFrame   |
 
 ### Return
-Returns list of the Rate.
+Returns list of the Rate or pandas.Dataframe if dataframe=True.
+Return None in case of  an error.
 
 |  Name       |  Type    |  Default  |  Description   |
 | ----        | ----     | ----      | ----          |
-| rates      | Rate[]      |           |  Returns list of the Rate  |
+| rates      | Rate[] or pandas.Dataframe or Noneor None      |           |  Returns list of the Rate or pandas.Dataframe if dataframe=True. Return None in case of  an error.  |
 
 ## GetRatesByTimeInterval
 Call by the start and end dates of a required time interval
@@ -80,10 +84,11 @@ rates = GetRatesByTimeInterval(symbol, timeframe, start_time, stop_time)
 | timeframe        | ENUM_TIMEFRAME |           | Period   |
 | start_time      | datetime           |           | Start date and time   | 
 | stop_time       | datetime           |           | End date and time   |
-
+| dataframe       | bool           | True          | return as pandas.DataFrame   |
 ### Return
-Returns list of the Rate.
+Returns list of the Rate or pandas.Dataframe if dataframe=True.
+Return None in case of  an error.
 
 |  Name       |  Type    |  Default  |  Description   |
 | ----        | ----     | ----      | ----          |
-| rates      | Rate[]      |           |  Returns list of the Rate  |
+| rates      | Rate[] or pandas.Dataframe or None     |           |  Returns list of the Rate or pandas.Dataframe if dataframe=True. Return None in case of  an error. |

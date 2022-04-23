@@ -9,7 +9,7 @@ from backtesting.test import EURUSD
 from lib.api import Request, Response
 from lib.order import ENUM_ORDER_ACTION
 from lib.api import ENUM_EVENT_ACTION
-from lib.type import Rate, Tick
+from lib.type import Rate, Tick, ENUM_ORDER_TYPE
 from lib.timeseries import ENUM_TIMESERIES_ACTION
 from datetime import datetime
 
@@ -30,10 +30,6 @@ def build_server():
     server.bind(server_address)
     print("Server started")
     return server
-
-server = build_server()
-client = connect_to_server()
-count = 0
 
 def wait_run_command():
     # EA <-isPrepared- Metapy
@@ -70,9 +66,9 @@ def on_init():
             break
     print("onInit finished")
 
-def on_tick():
+def on_tick(strategy):
     global count
-    print("onTick")
+    print("onTick", strategy.data.Close)
     # EA ----OnTick->  Metapy
     # EA <-OK-------- Metapy
     tick = Tick(
@@ -104,20 +100,32 @@ def on_tick():
             server.send_string(res.json())
             break
         elif req.action == ENUM_ORDER_ACTION.ORDER_ACTION_SEND:
-            res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND, data=None, error=None)
+            if req.data["type"] == ENUM_ORDER_TYPE.ORDER_TYPE_BUY:
+                strategy.buy()
+            if req.data["type"] == ENUM_ORDER_TYPE.ORDER_TYPE_SELL:
+                strategy.sell()
+            res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND, data=10000, error=None)
+            server.send_string(res.json())
+        elif req.action == ENUM_ORDER_ACTION.ORDER_ACTION_CLOSE:
+            strategy.position.close()
+            res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_CLOSE, data=True, error=None)
             server.send_string(res.json())
         elif req.action == ENUM_TIMESERIES_ACTION.TIMESERIES_ACTION_GET_N_RATES_BY_START_POSITION:
-            rates = [Rate(
-                    time=datetime.now(),
-                    open=1.0,
-                    high=1.0,
-                    low=1.0,
-                    close=1.0,
-                    tick_volume=1,
-                    spread=1,
-                    real_volume=1,
-                ) for i in range(10)]
-            res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND, data=rates, error=None)
+            num = req.data["count"]
+            if len(strategy.data.Close) < num:
+                res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND, data=None, error="Not enough data")
+            else:
+                rates = [Rate(
+                        time=datetime.now(),
+                        open=strategy.data.Open[-i-1],
+                        high=strategy.data.High[-i-1],
+                        low=strategy.data.Low[-i-1],
+                        close=strategy.data.Close[-i-1],
+                        tick_volume=1,
+                        spread=1,
+                        real_volume=1,
+                    ) for i in range(num)]
+                res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND, data=rates, error=None)
             server.send_string(res.json())
 
     print("onTick finished")
@@ -148,15 +156,11 @@ class MockMetatrader(Strategy):
 
 
     def init(self):
-        #print("prepare")
-        #self.build_server()
-        #self.connect_to_server()
-        #prepare()
         wait_run_command()
         on_init()
     
     def next(self):
-        on_tick()
+        on_tick(self)
         print("finish next")
         
 
@@ -175,11 +179,13 @@ class Backtester:
         print(stats)
 
 if __name__ == "__main__":
-    backtester = Backtester()
-    backtester.run()
-    #server = TestServer()
-    #server.connect()
-    #server.run_server()
+    server = build_server()
+    client = connect_to_server()
+    count = 0
+    bt = Backtest(EURUSD[:100], MockMetatrader, cash=10_000, commission=.002)
+    stats = bt.run()
+    on_deinit()
+    print(stats)
 
     ## Prepare
     # EA <-isPrepared- Metapy

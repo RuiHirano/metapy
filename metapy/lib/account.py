@@ -21,39 +21,23 @@ class Account:
     def AccountBalance(
         self, 
     ):
-        data = json.dumps(MessageModel(
-            action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_BALANCE,
-            data={}
-        ).dict())
-        res = self.api.send_message(data)
-        return res
+        balance = self.api.send_message(action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_BALANCE, data=None)
+        return balance
 
     def AccountCredit(
         self, 
     ):
-        data = json.dumps(MessageModel(
-            action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_CREDIT,
-            data={}
-        ).dict())
-        res = self.api.send_message(data)
-        return res
+        credit = self.api.send_message(action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_CREDIT, data=None)
+        return credit
 
     def AccountCurrency(
         self, 
     ):
-        data = json.dumps(MessageModel(
-            action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_CURRENCY,
-            data={}
-        ).dict())
-        res = self.api.send_message(data)
-        return res
+        currency = self.api.send_message(action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_CURRENCY, data=None)
+        return currency
 
     def AccountEquity(
         self, 
     ):
-        data = json.dumps(MessageModel(
-            action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_EQUITY,
-            data={}
-        ).dict())
-        res = self.api.send_message(data)
-        return res
+        equity = self.api.send_message(action=ENUM_ACCOUNT_ACTION.ACCOUNT_ACTION_EQUITY, data=None)
+        return equity

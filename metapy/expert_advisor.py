@@ -4,7 +4,6 @@ from lib.order import Order
 from lib.account import Account
 from lib.market import Market
 from lib.timeseries import Timeseries
-from lib.client import Client, MockClient
 from lib.api import API
 from datetime import datetime
 from lib.logger import log

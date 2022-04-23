@@ -19,9 +19,5 @@ class Market:
     def SymbolExist(
         self, 
     ):
-        data = json.dumps(MessageModel(
-            action=ENUM_MARKET_ACTION.MARKET_ACTION_SYMBOL_EXIST,
-            data={}
-        ).dict())
-        res = self.api.send_message(data)
-        return res
+        exist = self.api.send_message(action=ENUM_MARKET_ACTION.MARKET_ACTION_SYMBOL_EXIST, data=None)
+        return exist
