@@ -10,6 +10,7 @@ from lib.api import Request, Response
 from lib.order import ENUM_ORDER_ACTION
 from lib.api import ENUM_EVENT_ACTION
 from lib.type import Rate, Tick
+from lib.timeseries import ENUM_TIMESERIES_ACTION
 from datetime import datetime
 
 def connect_to_server():
@@ -104,6 +105,19 @@ def on_tick():
             break
         elif req.action == ENUM_ORDER_ACTION.ORDER_ACTION_SEND:
             res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND, data=None, error=None)
+            server.send_string(res.json())
+        elif req.action == ENUM_TIMESERIES_ACTION.TIMESERIES_ACTION_GET_N_RATES_BY_START_POSITION:
+            rates = [Rate(
+                    time=datetime.now(),
+                    open=1.0,
+                    high=1.0,
+                    low=1.0,
+                    close=1.0,
+                    tick_volume=1,
+                    spread=1,
+                    real_volume=1,
+                ) for i in range(10)]
+            res = Response(action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND, data=rates, error=None)
             server.send_string(res.json())
 
     print("onTick finished")

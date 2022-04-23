@@ -74,10 +74,6 @@ class Order:
             expiration=expiration
         )
         
-        data = json.dumps(MessageModel(
-            action=ENUM_ORDER_ACTION.ORDER_ACTION_SEND,
-            data=order_send.dict()
-        ).dict())
         ticket = self.api.send_message(ENUM_ORDER_ACTION.ORDER_ACTION_SEND, order_send.dict())
         if ticket == -1:
             log.error("OrderSend is failed")
@@ -104,8 +100,7 @@ class Order:
             data=order_close.dict()
         ).dict())
         
-        res = self.api.send_message(data)
-        closed = res["data"]
+        closed = self.api.send_message(data)
         if closed:
             log.error("OrderClose is failed")
         else:
@@ -132,8 +127,7 @@ class Order:
             action=ENUM_ORDER_ACTION.ORDER_ACTION_MODIFY,
             data=order_modify.dict()
         ).dict())
-        res = self.api.send_message(data)
-        modified = res["data"]
+        modified = self.api.send_message(data)
         if modified:
             log.error("OrderModified is failed")
         else:
@@ -152,8 +146,7 @@ class Order:
             action=ENUM_ORDER_ACTION.ORDER_ACTION_DELETE,
             data=order_delete.dict()
         ).dict())
-        res = self.api.send_message(data)
-        deleted = res["data"]
+        deleted = self.api.send_message(data)
         if deleted:
             log.error("OrderDelete is failed")
         else:

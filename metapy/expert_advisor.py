@@ -57,7 +57,9 @@ if __name__ == "__main__":
 
         def on_tick(self, tick: Tick):
             ticket = self.OrderSend("EURUSD", 0, 0, 0, 0, 0, 0)
+            rates = self.GetNRatesByStartPosition("EURUSD", ENUM_TIMEFRAME.PERIOD_H1, 0, 10)
             print("on_tick", tick.time)
+            print(rates)
 
         def on_deinit(self):
             print("on_deinit")
