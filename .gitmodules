@@ -1,3 +1,3 @@
-[submodule "metapy/EA"]
-	path = metapy/EA
+[submodule "EA"]
+	path = EA
 	url = https://github.com/RuiHirano/metapy_EA.git
